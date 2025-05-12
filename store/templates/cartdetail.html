@@ -1,0 +1,124 @@
+{% extends 'layouts.html' %}
+{% load humanize %}
+{% block content%}
+{% load static %}
+
+<div class="container">
+    {% if not cart_items%}
+        <div class="alert alert-danger my-2" role="alert">
+            <b>ไม่มีสินค้าในตะกร้า</b>
+        </div>
+    {%else%}
+    <div class="table-responsive cart_info">
+        <table class="table table-condensed">
+            <thead>
+                <tr class="cart_menu">
+                    <td class="image">รายการสินค้า</td>
+                    <td class="description"></td>
+                    <td class="price">ราคา</td>
+                    <td class="quantity">จำนวน</td>
+                    <td class="total">รวม</td>
+                    <td></td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart_items %}
+                <tr>
+                    <td class="cart_product">
+                        <a href=""><img src="{{item.product.image.url}}" alt="" width="80px" height="80px"></a>
+                    </td>
+                    <td class="cart_description">
+                        <h4><a href="{{item.product.get_url}}">{{item.product.name}}</a></h4>
+                    </td>
+                    <td class="cart_price">
+                        <p>{{item.product.price|intcomma}}</p>
+                    </td>
+                    <td class="cart_quantity">
+                            <p>{{item.quantity}}</p>
+                        </div>
+                    </td>
+                    <td class="cart_total">
+                        <p class="cart_total_price">{{item.sub_total|intcomma}}</p>
+                    </td>
+                    <td class="cart_delete">
+                        <a class="cart_quantity_delete" onclick="return confirm('คุณต้องการลบสินค้าออกจากตะกร้าหรือไม่ ?')" href="{% url 'removeCart' item.product.id %}"><i class="fa fa-times"></i></a>
+                    </td>
+                </tr>
+                {%endfor%}
+            </tbody>
+        </table>
+    </div>
+
+    
+    <td></td>
+        <script>
+            const baseTotal = {{ total|floatformat:2 }};  // total จาก Django
+            function updateShippingFee() {
+                const postcode = document.getElementById("postcode").value;
+                let shippingFee = 70;
+
+                if (postcode >= 10000 && postcode <= 10999) {
+                    shippingFee = 30;
+                } else if (postcode >= 11000 && postcode <= 11999) {
+                    shippingFee = 50;
+                }
+
+                const grandTotal = baseTotal + shippingFee;
+                document.getElementById("shipping_fee").innerText = shippingFee.toFixed(2);
+                document.getElementById("grand_total").innerText = grandTotal.toFixed(2);
+            }
+        </script>
+        
+        <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
+            <h2>สรุปคำสั่งซื้อ</h2>
+            <table>
+                <tr>
+                    <td>ยอดสินค้า:</td>
+                    <td>{{ total|intcomma }} บาท</td>
+                </tr>
+                <tr>
+                    <td>ค่าจัดส่ง:</td>
+                    <td><span id="shipping_fee">-</span> บาท</td>
+                </tr>
+                <tr>
+                    <td><strong>รวมทั้งหมด:</strong></td>
+                    <td><strong><span id="grand_total">-</span> บาท</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>โอน:</strong></td>
+                    <td><strong>KBANK 045-8-37190-3 พรอนันต์ นนทะจู</strong></td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+        <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>ชื่อ-นามสกุล:</label>
+        <input type="text" name="name" required><br>
+    
+        <label>ที่อยู่:</label>
+        <input type="text" name="address" required><br>
+    
+        <label>เมือง:</label>
+        <input type="text" name="city" required><br>
+    
+        <label>รหัสไปรษณีย์:</label>
+        <input type="text" name="postcode" id="postcode" required oninput="updateShippingFee()"><br>
+    
+        <label>อีเมล:</label>
+        <input type="email" name="email" required><br>
+    
+        <label>เบอร์โทร:</label>
+        <input type="text" name="phone" required><br>
+    
+        <label>แนบหลักฐานการโอน:</label>
+        <input type="file" name="payment_slip" accept="image/*" required><br><br>
+    
+        <button type="submit">ยืนยันคำสั่งซื้อ</button>
+    </form>
+    
+    
+    {%endif%}
+</div>
+{% endblock %}
