@@ -40,10 +40,13 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 STATIC_URL='/static/'
-STATIC_ROOT=os.path.join(BASE_DIR,'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # แนะนำใช้ชื่อนี้
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
 
 MEDIA_URL='/media/'
-MEDIA_ROOT=os.path.join(BASE_DIR,'staic','media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static', 'media')
+
 
 
 # Application definition
@@ -60,8 +63,6 @@ INSTALLED_APPS = [
     "crispy_forms",
     "crispy_bootstrap4",
 
-    
- 
   
 ]
 
@@ -73,6 +74,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'djangoworkshop.urls'
@@ -165,6 +167,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
 
