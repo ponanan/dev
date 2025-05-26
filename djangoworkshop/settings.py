@@ -168,7 +168,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-LOGIN_URL = '/accounts/login/'
+LOGIN_URL = '/account/login/'
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
 
